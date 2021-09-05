@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import {
   Box,
   Flex,
@@ -45,7 +47,10 @@ const CreateUser = () => (
 
         <Flex mt={['6', '8']} justify="flex-end">
           <HStack>
-            <Button colorScheme="whiteAlpha">Cancelar</Button>
+            <Link href="/users" passHref>
+              <Button colorScheme="whiteAlpha">Cancelar</Button>
+            </Link>
+
             <Button colorScheme="pink">Salvar</Button>
           </HStack>
         </Flex>
