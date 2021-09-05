@@ -3,6 +3,7 @@ import Head from 'next/head'
 
 import { ChakraProvider } from '@chakra-ui/react'
 
+import { SidebarDrawerProvider } from '@/contexts/SidebarDrawerContext'
 import { theme } from '@/styles/theme'
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -13,7 +14,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
 
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
+        <SidebarDrawerProvider>
+          <Component {...pageProps} />
+        </SidebarDrawerProvider>
       </ChakraProvider>
     </>
   )

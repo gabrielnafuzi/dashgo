@@ -13,7 +13,13 @@ export const SearchBox = () => (
     color="gray.200"
     position="relative"
     bg="gray.800"
+    borderWidth={1}
+    borderColor="transparent"
     borderRadius="full"
+    transition="all 0.3s"
+    _focusWithin={{
+      borderColor: 'pink.500'
+    }}
   >
     <Input
       color="gray.50"
