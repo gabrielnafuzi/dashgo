@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { GetServerSideProps } from 'next'
 import NextLink from 'next/link'
 
 import {
@@ -26,12 +27,19 @@ import { Header } from '@/components/Header'
 import { Pagination } from '@/components/Pagination'
 import { Sidebar } from '@/components/Sidebar'
 import { api } from '@/services/api'
-import { useUsers } from '@/services/hooks/use-users'
+import { getUsers, User, useUsers } from '@/services/hooks/use-users'
 import { queryClient } from '@/services/query-client'
 
-const UserList = () => {
+type UserListProps = {
+  users?: User[]
+  totalCount?: number
+}
+
+const UserList = ({ users, totalCount = 0 }: UserListProps) => {
   const [page, setPage] = useState(1)
-  const { data, isLoading, isFetching, error } = useUsers(page)
+  const { data, isLoading, isFetching, error } = useUsers(page, {
+    initialData: users && { users, totalCount }
+  })
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -148,3 +156,14 @@ const UserList = () => {
 }
 
 export default UserList
+
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { users, totalCount } = await getUsers(1)
+
+//   return {
+//     props: {
+//       users,
+//       totalCount
+//     }
+//   }
+// }

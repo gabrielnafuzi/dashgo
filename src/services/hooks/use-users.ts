@@ -1,15 +1,20 @@
-import { useQuery } from 'react-query'
+import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query'
 
 import { api } from '@/services/api'
 
-type User = {
+type GetUserResponse = {
+  users: User[]
+  totalCount: number
+}
+
+export type User = {
   id: string
   name: string
   email: string
   createdAt: string
 }
 
-export const getUsers = async (page: number) => {
+export const getUsers = async (page: number): Promise<GetUserResponse> => {
   const { data, headers } = await api.get<{ users: User[] }>('/users', {
     params: { page }
   })
@@ -28,8 +33,9 @@ export const getUsers = async (page: number) => {
   return { users, totalCount }
 }
 
-export const useUsers = (page: number) => {
+export const useUsers = (page: number, options?: UseQueryOptions) => {
   return useQuery(['users', page], () => getUsers(page), {
-    staleTime: 1000 * 60 * 10 // 10 minutes
-  })
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    ...(options ?? {})
+  }) as UseQueryResult<GetUserResponse, unknown>
 }
