@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import Link from 'next/link'
+import NextLink from 'next/link'
 
 import {
   Box,
@@ -17,14 +17,17 @@ import {
   Checkbox,
   Text,
   Spinner,
-  useBreakpointValue
+  useBreakpointValue,
+  Link
 } from '@chakra-ui/react'
 import { RiAddLine } from 'react-icons/ri'
 
 import { Header } from '@/components/Header'
 import { Pagination } from '@/components/Pagination'
 import { Sidebar } from '@/components/Sidebar'
+import { api } from '@/services/api'
 import { useUsers } from '@/services/hooks/use-users'
+import { queryClient } from '@/services/query-client'
 
 const UserList = () => {
   const [page, setPage] = useState(1)
@@ -37,6 +40,20 @@ const UserList = () => {
 
   const handleSetPage = (newPageNumber: number) => {
     setPage(newPageNumber)
+  }
+
+  const handlePrefetchUser = async (userId: string) => {
+    await queryClient.prefetchQuery(
+      ['user', userId],
+      async () => {
+        const response = await api.get(`users/${userId}`)
+
+        return response
+      },
+      {
+        staleTime: 1000 * 60 * 10 // 10 minutes
+      }
+    )
   }
 
   return (
@@ -55,7 +72,7 @@ const UserList = () => {
               )}
             </Heading>
 
-            <Link href="/users/create" passHref>
+            <NextLink href="/users/create" passHref>
               <Button
                 as="a"
                 size="sm"
@@ -65,7 +82,7 @@ const UserList = () => {
               >
                 Criar novo
               </Button>
-            </Link>
+            </NextLink>
           </Flex>
 
           {isLoading ? (
@@ -99,7 +116,12 @@ const UserList = () => {
 
                       <Td>
                         <Box>
-                          <Text fontWeight="bold">{name}</Text>
+                          <Link
+                            color="purple.400"
+                            onMouseEnter={() => handlePrefetchUser(id)}
+                          >
+                            <Text fontWeight="bold">{name}</Text>
+                          </Link>
                           <Text fontSize="sm" color="gray.300">
                             {email}
                           </Text>
